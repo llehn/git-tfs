@@ -685,7 +685,7 @@ namespace Sep.Git.Tfs.Core
             var commits = new List<Commit>();
             foreach (var c in commitsFromRemoteBranches)
             {
-                long id;
+                int id;
                 if (TryParseChangesetId(c.Message, out id))
                 {
                     AddToChangesetCache(changesetId, c.Sha);
