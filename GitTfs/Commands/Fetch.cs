@@ -41,8 +41,7 @@ namespace Sep.Git.Tfs.Commands
         bool FetchParents { get; set; }
         string BareBranch { get; set; }
         bool ForceFetch { get; set; }
-        bool ExportMetadatas { get; set; }
-        string ExportMetadatasFile { get; set; }
+        
         public bool IgnoreBranches { get; set; }
         public string BatchSizeOption
         {
@@ -86,9 +85,9 @@ namespace Sep.Git.Tfs.Commands
                     { "force", "Force fetch of tfs changesets when there is ahead commits (ahead commits will be lost!)",
                         v => ForceFetch = v != null },
                     { "x|export", "Export metadatas",
-                        v => ExportMetadatas = v != null },
+                        v => globals.ExportMetadatas = v != null },
                     { "export-work-item-mapping=", "Path to Work-items mapping export file",
-                        v => ExportMetadatasFile = v },
+                        v => globals.ExportMetadatasFile = v },
                     { "ignore-branches", "Ignore fetching merged branches when encounter merge changesets",
                         v => IgnoreBranches = v != null },
                     { "batch-size=", "Size of a the batch of tfs changesets fetched (-1 for all in one batch)",
@@ -166,15 +165,15 @@ namespace Sep.Git.Tfs.Commands
                     new[] {"Remove ahead commits and retry", "use the --force option (ahead commits will be lost!)"});
             }
 
-            var metadataExportInitializer = new ExportMetadatasInitializer(globals);
-            bool shouldExport = ExportMetadatas || remote.Repository.GetConfig(GitTfsConstants.ExportMetadatasConfigKey) == "true";
+            //var metadataExportInitializer = new ExportMetadatasInitializer(globals);
+            //bool shouldExport = ExportMetadatas || remote.Repository.GetConfig(GitTfsConstants.ExportMetadatasConfigKey) == "true";
 
-            if (ExportMetadatas)
-            {
-                metadataExportInitializer.InitializeConfig(remote.Repository, ExportMetadatasFile);
-            }
+            //if (ExportMetadatas)
+            //{
+            //    metadataExportInitializer.InitializeConfig(remote.Repository, ExportMetadatasFile);
+            //}
 
-            metadataExportInitializer.InitializeRemote(remote, shouldExport);
+            //metadataExportInitializer.InitializeRemote(remote, shouldExport);
 
             try
             {

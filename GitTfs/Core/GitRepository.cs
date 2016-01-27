@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using StructureMap;
 using LibGit2Sharp;
+using Sep.Git.Tfs.Util;
 using Branch = LibGit2Sharp.Branch;
 
 namespace Sep.Git.Tfs.Core
@@ -26,6 +27,11 @@ namespace Sep.Git.Tfs.Core
             GitDir = gitDir;
             _repository = new LibGit2Sharp.Repository(GitDir);
             _remoteConfigReader = remoteConfigReader;
+            metadataExportInitializer = new ExportMetadatasInitializer(_globals);
+            if (_globals.ExportMetadatas)
+            {
+                metadataExportInitializer.InitializeConfig(this, _globals.ExportMetadatasFile);
+            }
         }
 
         ~GitRepository()
@@ -195,6 +201,12 @@ namespace Sep.Git.Tfs.Core
             }
 
             var gitTfsRemote = BuildRemote(remote);
+
+            if (_globals.ExportMetadatas)
+            {
+                metadataExportInitializer.InitializeRemote(gitTfsRemote, true);
+            }
+
             gitTfsRemote.EnsureTfsAuthenticated();
 
             return _cachedRemotes[remote.Id] = gitTfsRemote;
@@ -562,6 +574,7 @@ namespace Sep.Git.Tfs.Core
         }
 
         private static readonly Regex tfsIdRegex = new Regex("^git-tfs-id: .*;C([0-9]+)\r?$", RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.RightToLeft);
+        private ExportMetadatasInitializer metadataExportInitializer;
 
         public static bool TryParseChangesetId(string commitMessage, out int changesetId)
         {

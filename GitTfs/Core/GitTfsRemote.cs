@@ -458,7 +458,7 @@ namespace Sep.Git.Tfs.Core
 
         private string ProcessChangeset(ITfsChangeset changeset, LogEntry log)
         {
-            if (ExportMetadatas)
+            if (globals.ExportMetadatas)
             {
                 if (changeset.Summary.Workitems.Any()) {
                     var workItemIds = TranslateWorkItems(changeset.Summary.Workitems.Select(wi => wi.Id.ToString()));
@@ -467,57 +467,57 @@ namespace Sep.Git.Tfs.Core
                     }
                 }
 
-                if (!string.IsNullOrWhiteSpace(changeset.Summary.PolicyOverrideComment))
-                    log.Log += "\n" + GitTfsConstants.GitTfsPolicyOverrideCommentPrefix + changeset.Summary.PolicyOverrideComment;
+                //if (!string.IsNullOrWhiteSpace(changeset.Summary.PolicyOverrideComment))
+                //    log.Log += "\n" + GitTfsConstants.GitTfsPolicyOverrideCommentPrefix + changeset.Summary.PolicyOverrideComment;
 
-                if (!string.IsNullOrWhiteSpace(changeset.Summary.CodeReviewer))
-                    log.Log += "\n" + GitTfsConstants.GitTfsCodeReviewerPrefix + changeset.Summary.CodeReviewer;
+                //if (!string.IsNullOrWhiteSpace(changeset.Summary.CodeReviewer))
+                //    log.Log += "\n" + GitTfsConstants.GitTfsCodeReviewerPrefix + changeset.Summary.CodeReviewer;
 
-                if (!string.IsNullOrWhiteSpace(changeset.Summary.SecurityReviewer))
-                    log.Log += "\n" + GitTfsConstants.GitTfsSecurityReviewerPrefix + changeset.Summary.SecurityReviewer;
+                //if (!string.IsNullOrWhiteSpace(changeset.Summary.SecurityReviewer))
+                //    log.Log += "\n" + GitTfsConstants.GitTfsSecurityReviewerPrefix + changeset.Summary.SecurityReviewer;
 
-                if (!string.IsNullOrWhiteSpace(changeset.Summary.PerformanceReviewer))
-                    log.Log += "\n" + GitTfsConstants.GitTfsPerformanceReviewerPrefix + changeset.Summary.PerformanceReviewer;
+                //if (!string.IsNullOrWhiteSpace(changeset.Summary.PerformanceReviewer))
+                //    log.Log += "\n" + GitTfsConstants.GitTfsPerformanceReviewerPrefix + changeset.Summary.PerformanceReviewer;
             }
 
             var commitSha = Commit(log);
             UpdateTfsHead(commitSha, changeset.Summary.ChangesetId);
             StringBuilder metadatas = new StringBuilder();
-            if (changeset.Summary.Workitems.Any())
-            {
-                string workitemNote = "Workitems:\n";
-                foreach (var workitem in changeset.Summary.Workitems)
-                {
-                    var workitemId = workitem.Id.ToString();
-                    var workitemUrl = workitem.Url;
-                    if (ExportMetadatas && ExportWorkitemsMapping.Count != 0)
-                    {
-                        if (ExportWorkitemsMapping.ContainsKey(workitemId))
-                        {
-                            var oldWorkitemId = workitemId;
-                            workitemId = ExportWorkitemsMapping[workitemId];
-                            workitemUrl = workitemUrl.Replace(oldWorkitemId, workitemId);
-                        }
-                    }
-                    workitemNote += String.Format("[{0}] {1}\n    {2}\n", workitemId, workitem.Title, workitemUrl);
-                }
-                metadatas.Append(workitemNote);
-            }
+            //if (changeset.Summary.Workitems.Any())
+            //{
+            //    string workitemNote = "Workitems:\n";
+            //    foreach (var workitem in changeset.Summary.Workitems)
+            //    {
+            //        var workitemId = workitem.Id.ToString();
+            //        var workitemUrl = workitem.Url;
+            //        if (ExportMetadatas && ExportWorkitemsMapping.Count != 0)
+            //        {
+            //            if (ExportWorkitemsMapping.ContainsKey(workitemId))
+            //            {
+            //                var oldWorkitemId = workitemId;
+            //                workitemId = ExportWorkitemsMapping[workitemId];
+            //                workitemUrl = workitemUrl.Replace(oldWorkitemId, workitemId);
+            //            }
+            //        }
+            //        workitemNote += String.Format("[{0}] {1}\n    {2}\n", workitemId, workitem.Title, workitemUrl);
+            //    }
+            //    metadatas.Append(workitemNote);
+            //}
 
-            if (!string.IsNullOrWhiteSpace(changeset.Summary.PolicyOverrideComment))
-                metadatas.Append("\nPolicy Override Comment:" + changeset.Summary.PolicyOverrideComment);
+            //if (!string.IsNullOrWhiteSpace(changeset.Summary.PolicyOverrideComment))
+            //    metadatas.Append("\nPolicy Override Comment:" + changeset.Summary.PolicyOverrideComment);
 
-            if (!string.IsNullOrWhiteSpace(changeset.Summary.CodeReviewer))
-                metadatas.Append("\nCode Reviewer:" + changeset.Summary.CodeReviewer);
+            //if (!string.IsNullOrWhiteSpace(changeset.Summary.CodeReviewer))
+            //    metadatas.Append("\nCode Reviewer:" + changeset.Summary.CodeReviewer);
 
-            if (!string.IsNullOrWhiteSpace(changeset.Summary.SecurityReviewer))
-                metadatas.Append("\nSecurity Reviewer:" + changeset.Summary.SecurityReviewer);
+            //if (!string.IsNullOrWhiteSpace(changeset.Summary.SecurityReviewer))
+            //    metadatas.Append("\nSecurity Reviewer:" + changeset.Summary.SecurityReviewer);
 
-            if (!string.IsNullOrWhiteSpace(changeset.Summary.PerformanceReviewer))
-                metadatas.Append("\nPerformance Reviewer:" + changeset.Summary.PerformanceReviewer);
+            //if (!string.IsNullOrWhiteSpace(changeset.Summary.PerformanceReviewer))
+            //    metadatas.Append("\nPerformance Reviewer:" + changeset.Summary.PerformanceReviewer);
 
-            if (!string.IsNullOrWhiteSpace(changeset.OmittedParentBranch))
-                metadatas.Append("\nOmitted parent branch: " + changeset.OmittedParentBranch);
+            //if (!string.IsNullOrWhiteSpace(changeset.OmittedParentBranch))
+            //    metadatas.Append("\nOmitted parent branch: " + changeset.OmittedParentBranch);
 
             if (metadatas.Length != 0)
                 Repository.CreateNote(commitSha, metadatas.ToString(), log.AuthorName, log.AuthorEmail, log.Date);
@@ -807,8 +807,8 @@ namespace Sep.Git.Tfs.Core
         {
             var builder = new StringWriter();
             builder.WriteLine(tfsCheckinComment);
-            builder.WriteLine(GitTfsConstants.TfsCommitInfoFormat,
-                TfsUrl, TfsRepositoryPath, changesetId);
+            //builder.WriteLine(GitTfsConstants.TfsCommitInfoFormat,
+            //    TfsUrl, TfsRepositoryPath, changesetId);
             return builder.ToString();
         }
 

@@ -147,12 +147,14 @@ For more information, see https://github.com/git-tfs/git-tfs/issues/448 ");
 
         public int GcPeriod
         {
-            get { return 200; }
+            get { return 2000; }
         }
 
         public TextWriter Stdout { get; set; }
 
         public Bootstrapper Bootstrapper { get; set; }
         public string CommandLineRun { get; set; }
+        public bool ExportMetadatas { get; set; }
+        public string ExportMetadatasFile { get; set; }
     }
 }
